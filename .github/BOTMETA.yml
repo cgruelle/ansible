@@ -27,6 +27,8 @@
 #           ignored - these people should never be notified
 #           deprecated - this file is deprecated but probably not yet renamed
 #           keywords - used to identify this file based on the issue description
+#           migrated_to - Location on Galaxy,
+#                         see https://docs.ansible.com/ansible/devel/dev_guide/developing_collections.html
 #           support - used for files without internal ANSIBLE_METADATA, see
 #                     https://github.com/ansible/ansible/labels?q=support for full list
 #           labels - list of GitHub labels to apply. Path components of 'file' parent key
@@ -250,6 +252,9 @@ files:
     ignored: bpennypacker
   $modules/monitoring/datadog_event.py:
     ignored: arturaz
+  $modules/monitoring/grafana:
+    labels: grafana
+    maintainers: $team_grafana
   $modules/monitoring/logentries.py:
     ignored: ivanvanderbyl
   $modules/monitoring/monit.py: brian-brazil
@@ -287,8 +292,9 @@ files:
     labels: [ asa, cisco, networking ]
   $modules/network/avi/: $team_avi
   $modules/network/bigswitch/: jayakody tedelhourani vuile
-  $modules/network/cloudengine/:
+  $modules/network/cloudengine/: &cloudengine
     maintainers: $team_huawei
+    labels: [ huawei, cloudengine, networking ]
   $modules/network/cnos/: dkasberg amuraleedhar
   $modules/network/cumulus/: $team_cumulus
   $modules/network/dellos10/: skg-net
@@ -366,6 +372,8 @@ files:
     ignored: chrishoffman
     maintainers: shane-walker xcambar
   $modules/packaging/language/pip.py: Lujeni webknjaz
+  $modules/packaging/language/pear.py:
+    ignored: jle64
   $modules/packaging/os/apk.py:
     ignored: kbrebanov
     maintainers: tdtrask
@@ -733,7 +741,7 @@ files:
   $module_utils/network/bigswitch:
     maintainers: jayakody tedelhourani vuile
   $module_utils/network/cloudengine:
-    maintainers: $team_huawei
+    <<: *cloudengine
   $module_utils/network/cnos:
     maintainers: dkasberg amuraleedhar
   $module_utils/network/common:
@@ -949,6 +957,9 @@ files:
   $plugins/action/bigiq:
     maintainers: caphrim007 wojtek0806
     labels: networking
+  $plugins/action/ce:
+    <<: *cloudengine
+    support: network
   $plugins/action/dellos:
     maintainers: skg-net
     labels: networking
@@ -1014,7 +1025,8 @@ files:
   $plugins/callback/default:
     support: core
   $plugins/callback/grafana_annotations.py:
-    maintainers: rrey
+    maintainers: $team_grafana
+    labels: monitoring grafana
   $plugins/callback/foreman.py:
     maintainers: $team_foreman
   $plugins/callback/junit:
@@ -1040,6 +1052,8 @@ files:
 
   $plugins/cliconf/:
     labels: networking
+  $plugins/cliconf/ce.py:
+    <<: *cloudengine
   $plugins/cliconf/edgeswitch.py:
     maintainers: f-bor
   $plugins/cliconf/eos.py:
@@ -1262,6 +1276,9 @@ files:
     support: core
   $plugins/lookup/first_found.py:
     support: core
+  $plugins/lookup/grafana_dashboard.py:
+    maintainers: $team_grafana
+    labels: monitoring grafana
   $plugins/lookup/indexed_items.py:
     support: core
   $plugins/lookup/inventory_hostnames.py:
@@ -1332,8 +1349,7 @@ files:
     maintainers: Im0
     support: community
   $plugins/netconf/ce.py:
-    maintainers: $team_huawei
-    labels: networking
+    <<: *cloudengine
   $plugins/netconf/sros.py:
     maintainers: wisotzky $team_networking
     labels: networking
@@ -1353,6 +1369,8 @@ files:
   $plugins/terminal/__init__.py:
     support: network
   $plugins/terminal/asa.py: *asa
+  $plugins/terminal/ce.py:
+    <<: *cloudengine
   $plugins/terminal/dellos10:
     maintainers: skg-net
   $plugins/terminal/edgeos.py:
@@ -1477,6 +1495,7 @@ files:
   test/integration/targets/asa_: *asa
   test/integration/targets/acme: *crypto
   test/integration/targets/aix: *aix
+  test/integration/targets/ce_: *cloudengine
   test/integration/targets/cloudscale:
     maintainers: $team_cloudscale
     labels: cloud
@@ -1542,6 +1561,7 @@ files:
     maintainers: $team_networking
     labels: networking
   test/units/modules/network/aireos: *aireos
+  test/units/modules/network/cloudengine: *cloudengine
   test/units/modules/network/exos: $team_extreme
   test/units/modules/network/ftd: *ftd
   test/units/modules/network/ios: *ios
@@ -1584,6 +1604,7 @@ macros:
   team_ftd: annikulin
   team_gitlab: dj-wasabi Lunik marwatk Shaps waheedi
   team_google: rambleraptor erjohnso
+  team_grafana: rrey seuf
   team_hcloud: cschmitt-hcloud LKaemmerling
   team_hpux: bcoca dagwieers davx8342
   team_huawei: zhongjun2 zengchen1024 niuzhenguo freesky-edward TommyLike edisonxiang QijunPan xuxiaowei0512 hwDCN
